@@ -2,7 +2,7 @@
 #by will
 
 #background is background1
-
+#
 import pygame #load keywords from file
 import sys #python can now use file system
 import os #lets python understand your OS
