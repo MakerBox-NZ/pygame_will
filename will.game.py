@@ -25,8 +25,8 @@ class Enemy(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.momentumX += x
-        self.momentumY += y
+        self.momentumX = 0
+        self.momentumY = 0
         self.images = []
         img = pygame.image.load(os.path.join('images','hero.png')).convert()
         img.convert_alpha()
@@ -34,28 +34,35 @@ class Player(pygame.sprite.Sprite):
         self.images.append(img)
         self.image = self.images[0]
         self.rect  = self.image.get_rect()
+
+        self.score = 0 #set score
         
     def control(self, x, y):
-        self.momentumX +- x
-        self.momentumY +- y
+        self.momentumX += x
+        self.momentumY += y
 
-    def update(self):
-        #update sprite locatiuon
-        currentX = self.react.x
-        nextX = currentX + self.momentumX
-        self.rect.x = netX
+    def update(self, enemy_list):
+        #update sprite pos
+        currentX = self.rect.x
+        nextX = currentX+self.momentumX
+        self.rect.x = nextX
 
         currentY = self.rect.y
-        nextY = currentY + self.momentumY
+        nextY = currentY+self.momentumY
         self.rect.y = nextY
+
+        #collisions
+        enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
+        for enemy in enemy_hit_list:
+            self.score -= 1
+            print(self.score)
+
+
 '''
 Setup
 '''
 
-#enemy code
-enemy = Enemy(100,50, 'enemy.png') #spawn enemy
-enemy_list = pygame.sprite.Group()
-enemy_list.add(enemy) #add enemy to group
+
 
 alpha = (0,0,0)
 black = (0,0,0)
@@ -78,6 +85,11 @@ player.rect.y = 0
 movingsprites = pygame.sprite.Group()
 movingsprites.add(player)
 movesteps = 10 #how fast the players steps are
+
+#enemy code
+enemy = Enemy(100,50, 'enemy.png') #spawn enemy
+enemy_list = pygame.sprite.Group()
+enemy_list.add(enemy) #add enemy to group
 '''
 Main loop
 '''
@@ -94,6 +106,8 @@ while main == True:
                 main = False
 
     screen.blit(backdrop, backdropRect)
+    player.update(enemy_list)
+    
     movingsprites.draw(screen)
     enemy_list.draw(screen) #refresh enemy 
     pygame.display.flip()
