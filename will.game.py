@@ -34,6 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.images.append(img)
         self.image = self.images[0]
         self.rect  = self.image.get_rect()
+        self.counter = 0 
 
         self.score = 0 #set score
         
@@ -41,7 +42,7 @@ class Player(pygame.sprite.Sprite):
         self.momentumX += x
         self.momentumY += y
 
-    def update(self, enemy_list):
+    def update(self, enemy_list,platform_list):
         #update sprite pos
         currentX = self.rect.x
         nextX = currentX+self.momentumX
@@ -56,6 +57,26 @@ class Player(pygame.sprite.Sprite):
         for enemy in enemy_hit_list:
             self.score -= 1
             print(self.score)
+
+        block_hit_list = pygame.sprite.spritecollide(self, platform_list, false)
+        if self.momentumX > 0:
+            for block in block_hit_list:
+                self.rect.y = currentY
+                self.rect.x = currentX+9
+                self.momentumY = 0
+
+        if self.momentumY > 0:
+            for block in block_hit_list:
+                self.rect.y = currentY
+                self.rect.momentumY = 0
+
+    def gravity(self):
+        self.momentumY += 3.2
+
+        if self.rect.y > 960 and self.momentumY >= 0:
+            self.momentumY = 0
+            self.rect.y = screenY-20
+
 
 
 '''
@@ -79,6 +100,9 @@ main = True
 screen = pygame.display.set_mode([screenX,screenY])
 backdrop = pygame.image.load(os.path.join('images','background1.png')).convert()
 backdropRect = screen.get_rect()
+
+platform_list = Platform.level1()
+
 player = Player()   # spawn player
 player.rect.x = 0
 player.rect.y = 0
