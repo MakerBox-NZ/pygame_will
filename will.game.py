@@ -10,6 +10,34 @@ import os
 '''
 Objects
 '''
+class Platform(pygame.sprite.Sprite):
+    #(x location, y location, img height, img file)
+    def__init__(self,xloc,yloc,imgw, imgh):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([imgw, imgh])
+        self.image.convert_alpha()
+        self.image.set_colorkey(alpha)
+        self.blockpic = pygame.image.load(img).convert()
+
+        self.rect = self.image.get_rect()
+
+        self.rect.y = yloc
+        self.rect.x = xloc
+        #paint img in block
+        
+    def level1():
+        #create lvl 1
+        platform_list = pygame.sprite.Group()
+        block = Platform(0, 591, 500, 77,os.path.join('images','block0.png'))
+#(x,y,img w, img file)
+        platform_list.add(block) #after each block
+
+        return platform_list #at end of functon
+    
+    
+
+
+
 #spawn an enemy
 class Enemy(pygame.sprite.Sprite):
     def __init__(self,x,y,img):
@@ -34,7 +62,13 @@ class Player(pygame.sprite.Sprite):
         self.images.append(img)
         self.image = self.images[0]
         self.rect  = self.image.get_rect()
-        self.counter = 0 
+        self.counter = 0
+
+    def move (self):
+        #enemy movement
+        if self.counter >= 0 and self.counter <= 30:
+            self.rect.x +=2
+        elif self.counter >= 30 and self.counter <= 60:
 
         self.score = 0 #set score
         
